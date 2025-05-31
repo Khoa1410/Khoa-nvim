@@ -67,7 +67,7 @@ return {
           enabled = true,
           auto_trigger = true,     -- gợi ý tự động
           keymap = {
-            accept = "<S-Tab>",      -- accept gợi ý
+            accept = "<C-r>",      -- accept gợi ý
             next = "<C-c>h",        -- gợi ý tiếp theo
             prev = "<C-c>l",        -- gợi ý trước
             dismiss = "<C-c>d",     -- ẩn gợi ý
@@ -88,7 +88,6 @@ return {
       "nvim-telescope/telescope.nvim",
       "MunifTanjim/nui.nvim",
 
-
     },
     config = function()
       require("chatgpt").setup({
@@ -98,7 +97,7 @@ return {
     end,
   },
 
-  --gitlens 
+  --gitsigns
   {
     "lewis6991/gitsigns.nvim",
     dependencies = { "nvim-lua/plenary.nvim" },
@@ -114,6 +113,23 @@ return {
     dependencies = { "nvim-lua/plenary.nvim", "nvim-telescope/telescope.nvim" },
     config = function()
       require("neogit").setup {}
+    end,
+  },
+
+
+  --lazygit
+
+
+  {
+    "kdheepak/lazygit.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    cmd = { "LazyGit" },  -- lazy-load khi bạn gọi lệnh :LazyGit
+    keys = {
+      { "<C-h>g", "<cmd>LazyGit<CR>", desc = "Open LazyGit" },
+    },
+    config = function()
+      require("lazygit").setup({
+      })
     end,
   },
 
@@ -240,7 +256,20 @@ return {
         css = {},
         cpp = { "cpplint" },
         java = {}, -- Java thường dùng formatter/linter riêng
-      },
+      }
+
+      -- special linter cho Python
+    lint.linters.pylint={
+      cmd = "pylint",
+      stdin = false,
+      args = { "--from-stdin", "%filepath" },
+      stream = "stdout",
+      ignore_exitcode = true,
+      parser = require("lint.parser").from_errorformat([[%f:%l:%c: %m]], {
+        source = "pylint",
+        severity = vim.diagnostic.severity.WARN,
+      }),
+    }
 
       -- Gọi lint khi lưu file
       vim.api.nvim_create_autocmd({ "BufWritePost" }, {
@@ -248,6 +277,10 @@ return {
           lint.try_lint()
         end,
       })
+      -- Gọi pylint
+       vim.keymap.set("n", "<C-s>p", function()
+      lint.try_lint({ "pylint" })
+    end, { desc = "Run pylint manually" })
     end,
   },
 
