@@ -26,6 +26,9 @@ keymap("n", "<C-t>", "<cmd>ToggleTerm<CR>", opts)
 
 -- Mở/tắt file explorer với <leader>e (mặc định <leader> là Space)
 keymap("n", "<C-e>", "<cmd>NvimTreeToggle<CR>", opts)
+
+--nvim-dap (Debug Adapter Protocol) keymaps
+--
 -- Tiếp tục / bắt đầu (Continue)
 vim.keymap.set("n", "<C-d>c", function() require("dap").continue() end, { desc = "DAP Continue" })
 
@@ -49,10 +52,10 @@ vim.keymap.set("n", "<C-d>u", function() require("dapui").toggle() end, { desc =
 
 local builtin = require("telescope.builtin")
 
-vim.keymap.set("n", "<C-p>", builtin.find_files, { desc = "Tìm file (find_files)" })
-vim.keymap.set("n", "<C-f>", builtin.live_grep, { desc = "Tìm nội dung (live_grep)" })
-vim.keymap.set("n", "<leader>fb", builtin.buffers, { desc = "Tìm buffer" })
-vim.keymap.set("n", "<leader>fh", builtin.help_tags, { desc = "Tìm help" })
+vim.keymap.set("n", "<C-p>p", builtin.find_files, { desc = "Tìm file (find_files)" })
+vim.keymap.set("n", "<C-p>f", builtin.live_grep, { desc = "Tìm nội dung (live_grep)" })
+vim.keymap.set("n", "<C-p>b", builtin.buffers, { desc = "Tìm buffer" })
+vim.keymap.set("n", "<C-p>h", builtin.help_tags, { desc = "Tìm help" })
 
 --(<C-c>p) open command palette
 
@@ -84,7 +87,7 @@ vim.keymap.set('n', '<C-h>s', gs.stage_hunk, { desc = "Stage Hunk" })
 vim.keymap.set('n', '<C-h>r', gs.reset_hunk, { desc = "Reset Hunk" })
 
 --Stage đoạn được chọn trong visual mode.
-vim.keymap.set('v', '<C-hr>s', function() gs.stage_hunk({vim.fn.line("."), vim.fn.line("v")}) end, { desc = "Stage Hunk Visual" })
+vim.keymap.set('v', '<C-h>s', function() gs.stage_hunk({vim.fn.line("."), vim.fn.line("v")}) end, { desc = "Stage Hunk Visual" })
 
 --Reset đoạn được chọn trong visual mode.
 vim.keymap.set('v', '<C-h>r', function() gs.reset_hunk({vim.fn.line("."), vim.fn.line("v")}) end, { desc = "Reset Hunk Visual" })
@@ -126,6 +129,92 @@ vim.keymap.set('n', '<C-h>P', gs.toggle_deleted, { desc = "Toggle Deleted" })
 
 --AI chatbot
 vim.keymap.set("n", "<C-c>g", ":ChatGPT<CR>", { noremap = true, silent = true, desc = "Open ChatGPT" })
+
+
+--resize window
+
+vim.keymap.set("n", "<A-l>",  ":vertical resize -5<CR>")
+vim.keymap.set("n", "<A-h>", ":vertical resize +5<CR>")
+vim.keymap.set("n", "<A-k>",    ":resize +2<CR>")
+vim.keymap.set("n", "<A-j>",  ":resize -2<CR>")
+
+
+-- autocompletion
+--
+--  ["<C-n>"] = cmp.mapping.select_next_item(),  
+--  ["<C-p>"] = cmp.mapping.select_prev_item(),
+--  ["<C-Space>"] = cmp.mapping.complete(),
+--  ["<CR>"] = cmp.mapping.confirm({ select = true }),
+--  ["<Tab>"] = cmp.mapping(function(fallback)
+  --
+
+-- linter keymaps
+
+--python linter
+vim.keymap.set("n", "<C-s>p", function()
+  require("lint").try_lint({ "pylint" })
+end, { desc = "Run pylint manually" })
+
+
+-- lazygit keymaps
+-- vim.keymap.set("n", "<C-g>g", "<cmd>LazyGit<CR>", { noremap = true, silent = true, desc = "Open LazyGit" })
+
+
+
+
+
+-- vim diagnostics 
+
+-- 1. Đặt sign để hiển thị ở cột trái (signcolumn)
+vim.opt.signcolumn = "yes"        -- Luôn hiện signcolumn để không bị nhảy cột khi có lỗi
+
+-- 2. Cấu hình chung cho vim.diagnostic
+vim.diagnostic.config({
+  virtual_text = {
+    prefix = "●",      -- Dấu ● sẽ xuất hiện trước dòng lỗi
+    spacing = 2,       -- Khoảng cách giữa ký tự prefix và nội dung
+  },
+  signs = true,         -- Hiển thị các dấu ở signcolumn
+  underline = true,     -- Gạch chân chỗ có lỗi
+  update_in_insert = false,   -- Không cập nhật diagnostic khi đang ở chế độ Insert
+  severity_sort = true,        -- Sắp xếp theo mức độ (Error trước, Warn sau...)
+})
+
+-- 3.1 Tự động show diagnostic float khi đứng yên (CursorHold)
+vim.api.nvim_create_autocmd("CursorHold", {
+  pattern = "*",  -- áp dụng cho mọi filetype
+  callback = function()
+    vim.diagnostic.open_float(nil, {
+      focusable = false,
+      close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
+      border = "rounded",
+      source = "always",  -- hiển thị nguồn (ví dụ: flake8, pylintrc...)
+      prefix = "",
+    })
+  end
+})
+
+-- 4. keymaps cho diagnostic
+
+local opts = { noremap = true, silent = true }
+
+-- Đi tới lỗi/warning kế tiếp
+vim.keymap.set("n", "[d", function() vim.diagnostic.goto_prev({ float = false }) end, opts)
+vim.keymap.set("n", "]d", function() vim.diagnostic.goto_next({ float = false }) end, opts)
+
+-- Mở popup xem diagnostic ở dòng hiện tại
+vim.keymap.set("n", "<Space>e", function()
+  vim.diagnostic.open_float({ border = "rounded" })
+end, opts)
+
+-- Lấy danh sách diagnostic trong buffer vào location list
+vim.keymap.set("n", "<Space>q", function()
+  vim.diagnostic.setloclist({ open = true })
+end, opts)
+
+
+
+
 
 
 
