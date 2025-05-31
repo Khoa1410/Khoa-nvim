@@ -17,44 +17,348 @@ return {
   },
 
   -- Nvim Tree
-  {
-  "nvim-tree/nvim-web-devicons",
-  lazy = true
-},
-
-  {
-    "nvim-tree/nvim-tree.lua",
-    dependencies = {
-      "nvim-tree/nvim-web-devicons",
-    },
-    config = function()
-      require("nvim-tree").setup({
-        view = {
-          width = 30,
-          side = "left",
-          adaptive_size = true,
-        },
-        renderer = {
-          icons = {
-            show = {
-              git = true,
-              folder = true,
-              file = true,
-              folder_arrow = true,
+{
+  "nvim-tree/nvim-tree.lua",
+  dependencies = {
+    "nvim-tree/nvim-web-devicons", -- vẫn giữ nếu sau này muốn bật lại icon
+  },
+  config = function()
+    require("nvim-tree").setup({
+      view = {
+        width = 30,
+        side = "left",
+        adaptive_size = true,
+      },
+      renderer = {
+        icons = {
+          webdev_colors = false,  -- không dùng màu icon
+          show = {
+            git = false,
+            folder = false,
+            file = false,
+            folder_arrow = false,
+          },
+          glyphs = {
+            default = "",
+            symlink = "",
+            folder = {
+              arrow_closed = "",
+              arrow_open = "",
+              default = "",
+              open = "",
+              empty = "",
+              empty_open = "",
+              symlink = "",
+              symlink_open = "",
+            },
+            git = {
+              unstaged = "",
+              staged = "",
+              unmerged = "",
+              renamed = "",
+              untracked = "",
+              deleted = "",
+              ignored = "",
             },
           },
         },
-        update_focused_file = {
-          enable = true,
-          update_cwd = true,
+      },
+      update_focused_file = {
+        enable = true,
+        update_cwd = true,
+      },
+      filters = {
+        dotfiles = false,
+        custom = { ".git", "node_modules", ".cache" },
+      },
+    })
+  end,
+},
+
+
+--outline.nvim
+
+
+
+{
+  "hedyhli/outline.nvim",
+  cmd = { "Outline", "OutlineOpen" },
+  keys = {
+    { "<C-s>f", "<cmd>Outline<CR>", desc = "Toggle Outline" },
+  },
+  opts = {
+    outline_window = {
+      position = "right",
+      width = 30,
+    },
+    symbols = {
+      -- bạn có thể cấu hình thêm tùy thích ở đây
+    },
+  },
+},
+
+
+
+--lualine.nvim
+
+  {
+    "nvim-lualine/lualine.nvim",
+    config = function()
+      require("lualine").setup({
+        options = {
+          theme = "auto",
+          component_separators = { left = "", right = "" },
+          section_separators = { left = "", right = "" },
+          icons_enabled = false,  -- Tắt icon ở đây
         },
-        filters = {
-          dotfiles = false,
-          custom = { ".git", "node_modules", ".cache" },
+        sections = {
+          lualine_a = { "mode" },
+          lualine_b = { "branch", "diff", "diagnostics" },
+          lualine_c = { "filename" },
+          lualine_x = { "encoding", "fileformat", "filetype" },
+          lualine_y = { "progress" },
+          lualine_z = { "location" },
         },
       })
     end,
   },
+
+
+
+
+
+--treesitter
+
+
+{
+  'nvim-treesitter/nvim-treesitter',
+  build = ':TSUpdate',
+  event = { 'BufReadPost', 'BufNewFile' },
+  config = function()
+    require('nvim-treesitter.configs').setup({
+      ensure_installed = {
+        "lua", "python", "javascript", "typescript", "html", "css", "bash", "json", "yaml"
+      },
+      highlight = {
+        enable = true,
+      },
+      indent = {
+        enable = true,
+      },
+      incremental_selection = {
+        enable = true,
+        keymaps = {
+          init_selection = "gnn",
+          node_incremental = "grn",
+          scope_incremental = "grc",
+          node_decremental = "grm",
+        },
+      },
+      textobjects = {
+        select = {
+          enable = true,
+          lookahead = true,
+          keymaps = {
+            ["af"] = "@function.outer",
+            ["if"] = "@function.inner",
+            ["ac"] = "@class.outer",
+            ["ic"] = "@class.inner",
+          },
+        },
+      },
+    })
+  end,
+},
+
+
+
+-- nvim-autopairs
+
+
+  {
+    "windwp/nvim-autopairs",
+    config = function()
+      require("nvim-autopairs").setup({
+      })
+    end,
+  },
+
+
+--Docker ui
+
+{
+  "skanehira/docker.vim",
+  cmd = { "DockerContainers", "DockerImages", "DockerVolumes", "DockerNetworks" },
+  keys = {
+    { "<Space-d>c", ":DockerContainers<CR>", desc = "Docker containers" },
+    { "<Space-d>i", ":DockerImages<CR>", desc = "Docker images" },
+  }
+},
+
+{
+  "stevearc/overseer.nvim",
+  config = function()
+    require("overseer").setup()
+    require("overseer").new_task({
+  cmd = { "docker-compose", "up" },
+  name = "Docker Up",
+  strategy = "terminal",
+})
+
+  end,
+},
+{
+  "nvim-telescope/telescope.nvim",
+  dependencies = {
+    "lpoto/telescope-docker.nvim", -- tiện ích Docker cho telescope
+  },
+  config = function()
+    require("telescope").load_extension("docker")
+  end
+},
+
+
+
+
+
+
+-- csv reader
+
+
+{
+  "chrisbra/csv.vim",
+  ft = "csv",
+  lazy = false,
+  event = "BufReadPre",
+  config = function()
+    -- Không cần config phức tạp, plugin tự hoạt động khi mở file .csv
+  end,
+},
+
+
+
+--preview markdown
+
+
+
+--{
+ -- "iamcco/markdown-preview.nvim",
+ -- ft = "markdown",
+ -- build = "cd app && npm install",
+  --config = function()
+   -- vim.g.mkdp_auto_start = 1
+  --end,
+--},
+
+
+
+-- image viewer
+
+
+
+{
+  "3rd/image.nvim",
+  dependencies = { "nvim-lua/plenary.nvim" },
+  lazy = true,
+  ft = { "markdown", "txt", "norg" }, -- load khi mở file markdown/text
+  config = function()
+    require("image").setup({
+      backend = "viu", -- nhẹ, hỗ trợ mọi terminal
+      integrations = {
+        markdown = true,
+      },
+      max_width = nil,
+      max_height = nil,
+      max_width_window_percentage = 50,
+      max_height_window_percentage = 50,
+    })
+  end,
+},
+
+
+  --bufferline
+  
+
+
+{
+  "akinsho/bufferline.nvim",
+  version = "*",
+  dependencies = { "nvim-tree/nvim-web-devicons" },
+  config = function()
+    require("bufferline").setup({
+      options = {
+        mode = "buffers",
+        diagnostics = "nvim_lsp",
+        separator_style = "thick",
+        show_buffer_close_icons = false,
+        show_close_icon = false,
+        color_icons = false,
+        show_buffer_icons = false,
+        indicator = {
+          style = "icon",
+          icon = "▶",  -- biểu tượng chỉ báo tab hiện tại
+        },
+        modifier_icons = "●",
+        },
+     highlights = {
+       buffer_selected = {
+    fg = "#fff0f7",        -- g0: sáng rõ
+    bg = "#d46a84",        -- gF: nền nổi bật
+    bold = true,
+    italic = false,
+  },
+  buffer_visible = {
+    fg = "#9e8b95",        -- g3: nhạt hơn
+    bg = "#f0dde6",        -- g1: nền sáng vừa phải
+    bold = false,
+    italic = false,
+  },
+  background = {
+    fg = "#75616b",        -- g5: xám tối cho tab chưa chọn
+    bg = "#f0dde6",        -- g1: nền sáng
+  },
+},
+ 
+
+          })
+    -- Keybinds để chuyển tab
+    vim.keymap.set("n", "<C-o>", ":BufferLineCycleNext<CR>", {})
+    vim.keymap.set("n", "<C-i>", ":BufferLineCyclePrev<CR>", {})
+  end,
+},
+
+
+-- formatter
+
+
+{
+  "stevearc/conform.nvim",
+  lazy = false, -- load ngay để hỗ trợ format-on-save
+  config = function()
+    require("conform").setup({
+      format_on_save = {
+        lsp_fallback = true, -- fallback nếu không có formatter riêng
+        timeout_ms = 500,    -- thời gian chờ format
+      },
+      formatters_by_ft = {
+        lua = { "stylua" },
+        python = { "black" },
+        javascript = { "prettier" },
+        typescript = { "prettier" },
+        json = { "prettier" },
+        html = { "prettier" },
+        css = { "prettier" },
+        sh = { "shfmt" },
+        markdown = { "prettier" },
+        yaml = { "prettier" },
+      },
+    })
+  end,
+},
+
+
+
+
 
   --copilot
 
@@ -90,11 +394,7 @@ return {
 
     },
     config = function()
-      require("chatgpt").setup({
-        api_key_cmd = "",
-      })
-
-    end,
+         end,
   },
 
   --gitsigns
@@ -150,6 +450,8 @@ return {
           require("telescope").load_extension("fzf")
         end,
       },
+      
+
     },
   cmd = "Telescope",  -- lazy load khi gọi :Telescope
   keys = {},
@@ -166,6 +468,7 @@ return {
     })
   end,
 },
+
 
 
 --telescope_command_palette

@@ -157,7 +157,7 @@ end, { desc = "Run pylint manually" })
 
 
 -- lazygit keymaps
--- vim.keymap.set("n", "<C-g>g", "<cmd>LazyGit<CR>", { noremap = true, silent = true, desc = "Open LazyGit" })
+-- vim.keymap.set("n", "<C-h>g", "<cmd>LazyGit<CR>", { noremap = true, silent = true, desc = "Open LazyGit" })
 
 
 
@@ -213,9 +213,26 @@ vim.keymap.set("n", "<Space>q", function()
 end, opts)
 
 
+-- formatter keymaps
 
 
+vim.keymap.set({ "n", "v" }, "<Space-f>", function()
+  require("conform").format({ async = true, lsp_fallback = true })
+end, { desc = "Format file" })
 
+
+--treesitter keymaps
+
+          --keymaps = {
+           -- ["af"] = "@function.outer",
+            --["if"] = "@function.inner",
+           -- ["ac"] = "@class.outer",
+            --["ic"] = "@class.inner",
+
+
+--outline keymaps
+
+--<C-s>f
 
 
 -- Reload init.lua với :ReloadConfig
@@ -223,4 +240,42 @@ vim.api.nvim_create_user_command("ReloadConfig", function()
   vim.cmd("source $MYVIMRC")
   print("✅ Reloaded init.lua!")
 end, {})
+
+
+-- theme
+
+require("theme.strawberry").setup()
+
+
+--autosave
+
+
+vim.api.nvim_create_autocmd({"InsertLeave", "TextChanged"}, {
+  pattern = "*",
+  callback = function()
+    if vim.bo.modifiable and vim.bo.modified then
+      vim.cmd("silent! write")
+      print("Autosaved ")
+    end
+  end,
+})
+
+
+
+--csv and excel reader
+
+vim.api.nvim_create_user_command("XlsxToCsv", function(opts)
+  local filepath = opts.args
+  if filepath == "" then
+    print("Please provide a path to the Excel file")
+    return
+  end
+  local cmd = string.format("!%s %s", "~/.config/nvim/scripts/xlsx_to_csv.py", filepath)
+  vim.cmd(cmd)
+  -- Mở file CSV tương ứng
+  local csvfile = filepath:gsub("%.xlsx$", ".csv")
+  vim.cmd("edit " .. csvfile)
+end, { nargs = 1, complete = "file" })
+
+
 

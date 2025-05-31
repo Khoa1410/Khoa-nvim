@@ -44,7 +44,7 @@ function M.setup()
 
   set_highlight("Bold", { bold = true })
   set_highlight("Directory", { fg = colors.g5, bold = true })
-  set_highlight("Italic", { underline = false }) 
+  set_highlight("Italic", { underline = false }) -- Lua neovim ko có italic riêng, để empty
   set_highlight("Normal", { fg = colors.g5, bg = colors.g0 })
   set_highlight("Underlined", { fg = colors.g5, underline = true })
 

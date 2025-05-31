@@ -1,9 +1,8 @@
-#  Khoa-nvim
+# Khoa-nvim
 
 Cấu hình tối ưu cho Neovim sử dụng Lazy.nvim — đơn giản, mạnh mẽ và nhanh chóng!
 
 ---
-
 
 - `trương trình điều kiện` (có thể bạn muốn nói đến "trình biên dịch" hoặc "logic điều kiện"?)
 - [`ripgrep`](https://github.com/BurntSushi/ripgrep): Tìm kiếm siêu nhanh trong project
@@ -17,8 +16,32 @@ Cấu hình tối ưu cho Neovim sử dụng Lazy.nvim — đơn giản, mạnh 
 
 ## 🎨 Theme
 
-
 ```lua
 vim.opt.rtp:append("~/.config/nvim/theme/strawberry")
 require("theme.strawberry").setup()
 
+```
+
+```bash
+# LUA
+cargo install stylua
+
+# Python
+pip install black
+
+# JS, TS, HTML, CSS, JSON, Markdown...
+npm install -g prettier
+
+# Shell
+npm install -g shfmt
+
+#excel viewer
+pip install tabulate openpyxl pandas
+pip install pandas openpyxl
+chmod +x ~/.config/nvim/scripts/xlsx_to_csv.py
+cargo install viu
+
+
+
+
+```
