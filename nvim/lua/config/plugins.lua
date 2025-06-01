@@ -1,4 +1,4 @@
-return {
+return{
   -- ToggleTerm
   {
     "akinsho/toggleterm.nvim",
@@ -379,6 +379,57 @@ return {
         },
         panel = { enabled = false }, -- tắt cửa sổ sidebar (tuỳ chọn)
       })
+    end,
+  },
+
+--copilot chat
+
+ {
+    "CopilotC-Nvim/CopilotChat.nvim",
+    cmd = { "CopilotChat", "CopilotChatToggle" },
+    dependencies = {
+      "zbirenbaum/copilot.lua",
+      "nvim-lua/plenary.nvim"
+    },
+    keys = {
+      { "<leader>cc", "<cmd>CopilotChatToggle<CR>", desc = "Toggle Copilot Chat" },
+    },
+    config = function()
+      require("CopilotChat").setup({
+        window = {
+          layout = "vertical",
+          width = 0.4,
+          position = "right",
+        },
+      })
+    end,
+  },
+
+-- diffview
+
+
+
+  {
+  "sindrets/diffview.nvim",
+  dependencies = { "nvim-lua/plenary.nvim" },
+  cmd = { "DiffviewOpen" },
+},
+
+
+  -- Telescope chat
+  {
+    "nvim-telescope/telescope.nvim",
+    cmd = "Telescope",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    config = function()
+      require("CopilotChat").setup({
+  window = {
+    layout = "vertical",
+    width = 0.4,
+    position = "right", -- đảm bảo có dòng này
+  },
+})
+      require("telescope").setup()
     end,
   },
 
