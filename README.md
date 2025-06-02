@@ -11,6 +11,11 @@ Cấu hình tối ưu cho Neovim sử dụng Lazy.nvim — đơn giản, mạnh 
 - [`cpplint`](https://github.com/cpplint/cpplint): Kiểm tra code C++
 - [`eslint_d`](https://github.com/mantoni/eslint_d.js): Kiểm tra code JavaScript nhanh chóng
 - [`lazygit`](https://github.com/jesseduffield/lazygit): Giao diện git nhẹ và đẹp
+- [`debugpy`]()
+- [`vscode-js-debug`]()
+- [`lldb`]()
+- [`neovim xclip xsel`]()
+- [`xclip xsel`]()
 
 ---
 

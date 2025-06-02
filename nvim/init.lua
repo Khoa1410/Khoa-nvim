@@ -5,6 +5,8 @@ vim.opt.tabstop = 2        -- số khoảng trắng cho mỗi tab
 vim.opt.shiftwidth = 2     -- số khoảng trắng khi auto-indent
 vim.opt.expandtab = true   -- dùng khoảng trắng thay vì tab thật
 vim.opt.smartindent = true -- tự động thụt dòng thông minh
+vim.opt.clipboard = "unnamedplus" -- dùng clipboard hệ thống
+
 
 
 -- Thêm lazy.nvim vào runtimepath
@@ -15,6 +17,7 @@ require("config.keymaps")
 require("config.options")
 require("config.plugins")
 require("config.lsp")     -- <- dòng này để load cấu hình LSP
+require("config.dap.dap")
 
 
 
@@ -235,6 +238,11 @@ end, { desc = "Format file" })
 --<C-s>f
 
 
+--which keymaps
+--
+--<Space-w>
+
+
 -- Reload init.lua với :ReloadConfig
 vim.api.nvim_create_user_command("ReloadConfig", function()
   vim.cmd("source $MYVIMRC")
@@ -279,4 +287,23 @@ end, { nargs = 1, complete = "file" })
 
 
 --chatbot diff
+
+
+--persistent undo
+
+vim.opt.undofile = true
+vim.opt.undodir = vim.fn.stdpath("cache") .. "/undo"
+vim.cmd("silent! call mkdir(stdpath('cache') . '/undo', 'p')")
+vim.opt.undolevels = 10000  
+vim.opt.undoreload = 10000
+
+--undo-tree
+vim.g.undotree_WindowLayout = 2 -- cửa sổ ngang
+vim.g.undotree_SetFocusWhenToggle = 1
+vim.g.undotree_SplitWidth = 30
+
+--keymaps <C-u>
+
+
+
 

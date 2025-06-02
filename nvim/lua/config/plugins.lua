@@ -76,6 +76,26 @@ return{
 },
 
 
+
+-- undo-tree
+
+
+
+{
+  "mbbill/undotree",
+  cmd = "UndotreeToggle",
+  keys = {
+    { "<C-u>", "<cmd>UndotreeToggle<CR>", desc = "Toggle Undotree" }
+  }
+},
+
+
+
+
+-- keymaps search
+
+
+
 --outline.nvim
 
 
@@ -594,6 +614,30 @@ return{
   },
 
 
+-- snippet
+
+
+  {
+    "L3MON4D3/LuaSnip",
+    version = "v2.*",
+    build = "make install_jsregexp",
+    dependencies = {
+      "saadparwaiz1/cmp_luasnip", -- tích hợp với nvim-cmp
+      "rafamadriz/friendly-snippets", -- bộ snippet mẫu
+    },
+    config = function()
+      require("luasnip.loaders.from_vscode").lazy_load() -- tải các snippet từ friendly-snippets
+    end,
+  },
+
+
+  {
+  "rafamadriz/friendly-snippets",
+  lazy = true,
+},
+
+
+
 --nvim-linter
 
 
@@ -746,6 +790,39 @@ return{
 },
 
 
+--python-debug-adapter
+ {
+  "mfussenegger/nvim-dap-python",
+  ft = "python",
+  dependencies = { "mfussenegger/nvim-dap" },
+  config = function()
+    local dap_python = require("dap-python")
+      dap_python.setup("/usr/bin/python3")
+  
+
+
+  end,
+},
+
+
+
+-- js-dap
+
+
+{
+  "mxsdev/nvim-dap-vscode-js",
+  dependencies = { "mfussenegger/nvim-dap" },
+  config = function()
+    require("dap-vscode-js").setup({
+      node_path = "node",  
+      debugger_path = vim.fn.stdpath("data") .. "/js-debug",  
+      adapters = { "pwa-node", "pwa-chrome", "pwa-msedge", "node-terminal" },
+    })
+  end,
+},
+
+
+ 
 
   -- Autocompletion
   {
