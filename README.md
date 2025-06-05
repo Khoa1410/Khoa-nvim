@@ -4,7 +4,7 @@ Cấu hình tối ưu cho Neovim sử dụng Lazy.nvim — đơn giản, mạnh 
 
 ---
 
-- `trương trình điều kiện` (có thể bạn muốn nói đến "trình biên dịch" hoặc "logic điều kiện"?)
+- `trương trình điều kiện nvim >= 0.11.1` (có thể bạn muốn nói đến "trình biên dịch" hoặc "logic điều kiện"?)
 - [`ripgrep`](https://github.com/BurntSushi/ripgrep): Tìm kiếm siêu nhanh trong project
 - [`fzf`](https://github.com/junegunn/fzf): Fuzzy finder trong terminal
 - [`pylint`](https://github.com/pylint-dev/pylint): Kiểm tra code Python
