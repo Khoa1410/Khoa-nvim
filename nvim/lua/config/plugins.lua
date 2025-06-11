@@ -6,15 +6,27 @@ return{
     config = function()
       require("toggleterm").setup({
         direction = "horizontal",
-        size = 15,
+        size = 7,
         open_mapping = [[<c-\>]],
         shade_terminals = false,
         start_in_insert = true,
         persist_size = true,
         close_on_exit = true,
       })
-    end,
-  },
+    vim.api.nvim_create_autocmd("TermOpen", {
+      pattern = "*",
+      callback = function()
+        vim.cmd("startinsert")
+        local opts = { buffer = true }
+        vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]], opts)
+        vim.keymap.set("t", "<C-h>", [[<Cmd>wincmd h<CR>]], opts)
+        vim.keymap.set("t", "<C-j>", [[<Cmd>wincmd j<CR>]], opts)
+        vim.keymap.set("t", "<C-k>", [[<Cmd>wincmd k<CR>]], opts)
+        vim.keymap.set("t", "<C-l>", [[<Cmd>wincmd l<CR>]], opts)
+      end,
+  })
+end,
+},
 
   -- Nvim Tree
 {
@@ -74,6 +86,8 @@ return{
     })
   end,
 },
+
+
 
 
 
@@ -190,7 +204,36 @@ return{
   end,
 },
 
+--indentscope
 
+
+{
+  "echasnovski/mini.indentscope",
+  version = false,
+  event = { "BufReadPre", "BufNewFile" },
+  config = function()
+    require('mini.indentscope').setup({
+      draw = {
+        delay = 50,
+        animation = require('mini.indentscope').gen_animation.none(),
+      },
+      symbol = "⎸" ,
+      options = { try_as_border = true },
+    })
+  end
+},
+
+{
+    "lukas-reineke/indent-blankline.nvim",
+    main = "ibl",
+    ---@module "ibl"
+    ---@type ibl.config
+    opts = {
+      indent = {
+        char = "▏"
+    }
+},
+},
 
 -- nvim-autopairs
 
@@ -379,51 +422,117 @@ return{
 
 
 
-
-  --copilot
-
-
-    {
+  -- Core Copilot completion
+  {
     "zbirenbaum/copilot.lua",
+    event = "InsertEnter",
     config = function()
       require("copilot").setup({
         suggestion = {
           enabled = true,
-          auto_trigger = true,     -- gợi ý tự động
+          auto_trigger = true,
           keymap = {
-            accept = "<C-r>",      -- accept gợi ý
-            next = "<C-c>h",        -- gợi ý tiếp theo
-            prev = "<C-c>l",        -- gợi ý trước
-            dismiss = "<C-c>d",     -- ẩn gợi ý
+            accept = "<C-r>",
+            next = "<C-c>h",
+            prev = "<C-c>l",
+            dismiss = "<C-c>d",
           },
         },
-        panel = { enabled = false }, -- tắt cửa sổ sidebar (tuỳ chọn)
-      })
-    end,
-  },
-
---copilot chat
-
- {
-    "CopilotC-Nvim/CopilotChat.nvim",
-    cmd = { "CopilotChat", "CopilotChatToggle" },
-    dependencies = {
-      "zbirenbaum/copilot.lua",
-      "nvim-lua/plenary.nvim"
-    },
-    keys = {
-      { "<leader>cc", "<cmd>CopilotChatToggle<CR>", desc = "Toggle Copilot Chat" },
-    },
-    config = function()
-      require("CopilotChat").setup({
-        window = {
-          layout = "vertical",
-          width = 0.4,
-          position = "right",
+        panel = {
+          enabled = false,
+        },
+        server_opts_overrides = {
+          -- Optional: override agent model and settings
+          capabilities = {
+            textDocument = {
+              codeAction = { dynamicRegistration = false },
+            },
+          },
         },
       })
     end,
   },
+
+  -- Copilot Chat with Agent capabilities
+
+
+
+
+
+
+{
+    "CopilotC-Nvim/CopilotChat.nvim",
+    build        = "make tiktoken",
+    dependencies = {
+      "github/copilot.vim",                   -- auth
+      { "nvim-lua/plenary.nvim", branch = "master" },
+    },
+
+    config = function()
+      local chat = require("CopilotChat")
+      chat.setup({                            -- MẶC ĐỊNH: không ép model, không keymap
+      })
+
+      --------------------------------------------------------------------------
+      -- ❶ DANH SÁCH BUFFER ĐƯỢC THÊM
+      --------------------------------------------------------------------------
+      vim.g.copilot_chat_files = {}
+
+      local function add_buf(bufnr)
+        if not vim.tbl_contains(vim.g.copilot_chat_files, bufnr) then
+          table.insert(vim.g.copilot_chat_files, bufnr)
+          vim.notify("Added: " .. vim.api.nvim_buf_get_name(bufnr), vim.log.levels.INFO)
+        else
+          vim.notify("Buffer already in list", vim.log.levels.WARN)
+        end
+      end
+
+      --------------------------------------------------------------------------
+      -- ❷ CÁC LỆNH QUẢN LÝ FILE & CHAT
+      --------------------------------------------------------------------------
+      -- Thêm file đang mở
+      vim.api.nvim_create_user_command("CopilotAddFile", function()
+        add_buf(vim.api.nvim_get_current_buf())
+      end, { desc = "Add current buffer" })
+
+      -- Xóa list
+      vim.api.nvim_create_user_command("CopilotClearFiles", function()
+        vim.g.copilot_chat_files = {}
+        vim.notify("File list cleared", vim.log.levels.INFO)
+      end, { desc = "Clear added file list" })
+
+      -- Liệt kê file
+      vim.api.nvim_create_user_command("CopilotListFiles", function()
+        if #vim.g.copilot_chat_files == 0 then
+          print("List empty")
+          return
+        end
+        for i, b in ipairs(vim.g.copilot_chat_files) do
+          print(i .. ": " .. vim.api.nvim_buf_get_name(b))
+        end
+      end, { desc = "Show list" })
+
+      -- Mở chat kèm các file đã add
+      vim.api.nvim_create_user_command("CopilotChatFiles", function(opts)
+        if #vim.g.copilot_chat_files == 0 then
+          vim.notify("List empty – add files first (:CopilotAddFile)", vim.log.levels.WARN)
+          return
+        end
+        local prompt = opts.args ~= "" and opts.args
+          or "Review the added files and send a unified diff patch that fixes issues."
+        -- Nếu muốn ép Sonnet 4: prompt = "$claude-sonnet-4\\n" .. prompt
+        chat.open(prompt, { context = { buffers = vim.g.copilot_chat_files } })
+      end, { nargs = "*", desc = "Chat with added files" })
+
+      --------------------------------------------------------------------------
+      -- ❸ LỆNH ÁP DỤNG / BỎ QUA HUNK (plugin đã có)
+      --------------------------------------------------------------------------
+      vim.api.nvim_create_user_command("CopilotAccept",  "CopilotChatApply", { desc = "Apply hunk"  })
+      vim.api.nvim_create_user_command("CopilotReject",  "CopilotChatSkip",  { desc = "Skip hunk"  })
+    end,
+  },
+
+
 
 -- diffview
 
@@ -451,21 +560,6 @@ return{
 })
       require("telescope").setup()
     end,
-  },
-
-
-  -- AI chat
-
-    {
-    "jackMort/ChatGPT.nvim",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "nvim-telescope/telescope.nvim",
-      "MunifTanjim/nui.nvim",
-
-    },
-    config = function()
-         end,
   },
 
   --gitsigns

@@ -6,6 +6,20 @@ vim.opt.shiftwidth = 2     -- số khoảng trắng khi auto-indent
 vim.opt.expandtab = true   -- dùng khoảng trắng thay vì tab thật
 vim.opt.smartindent = true -- tự động thụt dòng thông minh
 vim.opt.clipboard = "unnamedplus" -- dùng clipboard hệ thống
+vim.o.cursorline = true
+
+
+
+
+-- Thay thế tất cả các lệnh xóa bằng register black hole "_" để không sao chép gì
+vim.api.nvim_set_keymap('n', 'd', '"_d', { noremap = true, silent = true })  -- Chế độ Normal
+vim.api.nvim_set_keymap('n', 'dd', '"_dd', { noremap = true, silent = true })  -- Xóa dòng mà không sao chép
+vim.api.nvim_set_keymap('n', 'd$', '"_d$', { noremap = true, silent = true })  -- Xóa từ con trỏ đến cuối dòng
+vim.api.nvim_set_keymap('n', 'dw', '"_dw', { noremap = true, silent = true })  -- Xóa từ con trỏ đến từ kế tiếp
+vim.api.nvim_set_keymap('n', 'd2j', '"_d2j', { noremap = true, silent = true })  -- Xóa 2 dòng mà không sao chép
+
+-- Xóa trong chế độ Visual
+vim.api.nvim_set_keymap('v', 'd', '"_d', { noremap = true, silent = true })  -- Xóa vùng chọn mà không sao chép
 
 
 
@@ -18,6 +32,7 @@ require("config.options")
 require("config.plugins")
 require("config.lsp")     -- <- dòng này để load cấu hình LSP
 require("config.dap.dap")
+require("config.copilot_agent")
 
 
 
@@ -222,6 +237,17 @@ end, opts)
 vim.keymap.set({ "n", "v" }, "<Space-f>", function()
   require("conform").format({ async = true, lsp_fallback = true })
 end, { desc = "Format file" })
+
+
+
+
+-- go to definition keymaps
+
+vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { desc = "Go to Definition" })
+vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, { desc = "Go to Declaration" })
+vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, { desc = "Go to Implementation" })
+vim.keymap.set('n', 'gr', vim.lsp.buf.references, { desc = "Find References" })
+
 
 
 --treesitter keymaps
