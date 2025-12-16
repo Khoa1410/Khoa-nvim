@@ -43,9 +43,14 @@ local servers = {
 
 -- Lặp qua và setup từng server
 for _, server in ipairs(servers) do
-  lspconfig[server].setup({
+  --vim.lsp.config[server].setup({
+  --  capabilities = capabilities,
+  --  on_attach = on_attach,
+  --})
+  vim.lsp.config(server, {
     capabilities = capabilities,
     on_attach = on_attach,
-  })
+    })
 end
+vim.lsp.enable(servers)
 
