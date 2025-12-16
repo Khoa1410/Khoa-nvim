@@ -143,9 +143,6 @@ vim.keymap.set('n', '<C-h>D', function() gs.diffthis("~") end, { desc = "Diff Th
 vim.keymap.set('n', '<C-h>P', gs.toggle_deleted, { desc = "Toggle Deleted" })
 
 
---AI chatbot
-vim.keymap.set("n", "<C-c>g", ":ChatGPT<CR>", { noremap = true, silent = true, desc = "Open ChatGPT" })
-
 
 --resize window
 
@@ -288,25 +285,6 @@ vim.api.nvim_create_autocmd({"InsertLeave", "TextChanged"}, {
   end,
 })
 
-
-
---csv and excel reader
-
-vim.api.nvim_create_user_command("XlsxToCsv", function(opts)
-  local filepath = opts.args
-  if filepath == "" then
-    print("Please provide a path to the Excel file")
-    return
-  end
-  local cmd = string.format("!%s %s", "~/.config/nvim/scripts/xlsx_to_csv.py", filepath)
-  vim.cmd(cmd)
-  -- Mở file CSV tương ứng
-  local csvfile = filepath:gsub("%.xlsx$", ".csv")
-  vim.cmd("edit " .. csvfile)
-end, { nargs = 1, complete = "file" })
-
-
---chatbot diff
 
 
 --persistent undo
