@@ -45,10 +45,10 @@ end,
         icons = {
           webdev_colors = false,  -- không dùng màu icon
           show = {
-            git = false,
-            folder = false,
-            file = false,
-            folder_arrow = false,
+            git = true,
+            folder = true,
+            file = true,
+            folder_arrow = true,
           },
           glyphs = {
             default = "",
@@ -137,13 +137,14 @@ end,
 
   {
     "nvim-lualine/lualine.nvim",
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
     config = function()
       require("lualine").setup({
         options = {
           theme = "auto",
           component_separators = { left = "", right = "" },
           section_separators = { left = "", right = "" },
-          icons_enabled = false,  -- Tắt icon ở đây
+          icons_enabled = true,  -- Tắt icon ở đây
         },
         sections = {
           lualine_a = { "mode" },
@@ -353,10 +354,10 @@ end,
         mode = "buffers",
         diagnostics = "nvim_lsp",
         separator_style = "thick",
-        show_buffer_close_icons = false,
-        show_close_icon = false,
+        show_buffer_close_icons = true,
+        show_close_icon = true,
         color_icons = false,
-        show_buffer_icons = false,
+        show_buffer_icons = true,
         indicator = {
           style = "icon",
           icon = "▶",  -- biểu tượng chỉ báo tab hiện tại
@@ -971,5 +972,193 @@ end,
       })
     end,
   },
+
+
+
+
+
+
+
+--dressing nvim
+
+ {
+    "stevearc/dressing.nvim",
+    event = "VeryLazy",
+    opts = {
+      input = {
+        enabled = true,
+        default_prompt = "➤ ",
+        border = "rounded",
+        insert_only = true,
+        start_in_insert = true,
+        win_options = {
+          winblend = 0,
+          wrap = false,
+        },
+      },
+      select = {
+        enabled = true,
+        backend = { "telescope", "builtin" }, -- ưu tiên Telescope, fallback builtin
+        builtin = {
+          border = "rounded",
+          win_options = {
+            winblend = 0,
+          },
+        },
+      },
+    },
+  },
+
+
+
+
+
+
+--dashboard
+  {
+    "goolord/alpha-nvim",
+    event = "VimEnter",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    config = function()
+      local alpha = require("alpha")
+      local dashboard = require("alpha.themes.dashboard")
+
+      -- Header (bạn có thể thay ASCII khác)
+      dashboard.section.header.val = {
+        "███╗   ██╗██╗   ██╗██╗███╗   ███╗",
+        "████╗  ██║██║   ██║██║████╗ ████║",
+        "██╔██╗ ██║██║   ██║██║██╔████╔██║",
+        "██║╚██╗██║╚██╗ ██╔╝██║██║╚██╔╝██║",
+        "██║ ╚████║ ╚████╔╝ ██║██║ ╚═╝ ██║",
+        "╚═╝  ╚═══╝  ╚═══╝  ╚═╝╚═╝     ╚═╝",
+        "",
+      }
+
+      -- Buttons (giống LazyVim style)
+      dashboard.section.buttons.val = {
+        dashboard.button("f", "  Find file", ":Telescope find_files<CR>"),
+        dashboard.button("g", "  Live grep", ":Telescope live_grep<CR>"),
+        dashboard.button("r", "  Recent files", ":Telescope oldfiles<CR>"),
+        dashboard.button("n", "  New file", ":ene | startinsert<CR>"),
+        dashboard.button("c", "  Config", ":e $MYVIMRC<CR>"),
+        dashboard.button("q", "  Quit", ":qa<CR>"),
+      }
+
+      -- Footer
+      dashboard.section.footer.val = function()
+        local v = vim.version()
+        return ("Neovim %d.%d.%d"):format(v.major, v.minor, v.patch)
+      end
+
+      -- Layout spacing
+      dashboard.config.layout = {
+        { type = "padding", val = 2 },
+        dashboard.section.header,
+        { type = "padding", val = 1 },
+        dashboard.section.buttons,
+        { type = "padding", val = 1 },
+        dashboard.section.footer,
+      }
+
+      dashboard.config.opts.noautocmd = true
+      alpha.setup(dashboard.config)
+
+      -- Không để dashboard hiện statusline/tabline lộn xộn (tuỳ bạn)
+      vim.cmd([[autocmd FileType alpha setlocal nofoldenable]])
+    end,
+  },
+
+
+
+
+
+
+-- notify
+  {
+    "rcarriga/nvim-notify",
+    event = "VeryLazy",
+    opts = {
+      timeout = 2500,
+      stages = "fade",
+      max_height = function()
+        return math.floor(vim.o.lines * 0.75)
+      end,
+      max_width = function()
+        return math.floor(vim.o.columns * 0.75)
+      end,
+      render = "default",
+      background_colour = "#000000", -- tránh warning khi theme transparent
+    },
+    config = function(_, opts)
+      local notify = require("notify")
+      notify.setup(opts)
+      vim.notify = notify
+    end,
+  },
+
+  -- Fancy cmdline + messages + LSP hover/signature
+  {
+    "folke/noice.nvim",
+    event = "VeryLazy",
+    dependencies = {
+      "MunifTanjim/nui.nvim",
+      "rcarriga/nvim-notify",
+    },
+    opts = {
+      lsp = {
+        -- override markdown rendering so hover looks nice
+        override = {
+          ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+          ["vim.lsp.util.stylize_markdown"] = true,
+          ["cmp.entry.get_documentation"] = true,
+        },
+        hover = { enabled = true },
+        signature = { enabled = true },
+      },
+
+      presets = {
+        bottom_search = true,         -- / search ở dưới
+        command_palette = true,       -- cmdline + popup menu style
+        long_message_to_split = true, -- message dài -> split
+        inc_rename = false,
+        lsp_doc_border = true,        -- border cho hover/signature
+      },
+
+      -- Routes: lọc bớt message spam
+      routes = {
+        -- “written” / “yanked” hay bị spam
+        {
+          filter = {
+            event = "msg_show",
+            kind = "",
+            find = "%d+L, %d+B",
+          },
+          opts = { skip = true },
+        },
+        {
+          filter = {
+            event = "msg_show",
+            find = "written",
+          },
+          opts = { skip = true },
+        },
+        -- “No information available” (thường từ LSP)
+        {
+          filter = {
+            event = "notify",
+            find = "No information available",
+          },
+          opts = { skip = true },
+        },
+      },
+    },
+    config = function(_, opts)
+      require("noice").setup(opts)
+    end,
+  },
+
+
 }
+
+
 

@@ -1,14 +1,12 @@
 vim.opt.number = true
 vim.opt.mouse = "a"
 vim.opt.swapfile = false
-vim.opt.tabstop = 2        -- số khoảng trắng cho mỗi tab
-vim.opt.shiftwidth = 2     -- số khoảng trắng khi auto-indent
+vim.opt.tabstop = 4        -- số khoảng trắng cho mỗi tab
+vim.opt.shiftwidth = 4     -- số khoảng trắng khi auto-indent
 vim.opt.expandtab = true   -- dùng khoảng trắng thay vì tab thật
 vim.opt.smartindent = true -- tự động thụt dòng thông minh
 vim.opt.clipboard = "unnamedplus" -- dùng clipboard hệ thống
-vim.o.cursorline = true
-
-
+vim.opt.cursorline = true
 
 
 -- Thay thế tất cả các lệnh xóa bằng register black hole "_" để không sao chép gì
@@ -276,10 +274,6 @@ vim.api.nvim_create_user_command("ReloadConfig", function()
 end, {})
 
 
--- theme
-
-require("theme.strawberry").setup()
-
 
 --autosave
 
@@ -330,6 +324,16 @@ vim.g.undotree_SplitWidth = 30
 
 --keymaps <C-u>
 
+
+
+
+
+
+
+
+-- theme
+
+require("theme.strawberry").setup()
 
 
 
