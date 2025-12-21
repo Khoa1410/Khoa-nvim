@@ -34,7 +34,7 @@ return {
     },
   },
 
-  -- 3) Copilot Chat Agent UI: đọc file, so sánh, sinh diff & patch
+  -- 3) Copilot Chat Agent UI
   {
     "CopilotC-Nvim/CopilotChat.nvim",
     cmd = { "CopilotChat", "CopilotChatToggle", "CopilotChatAgents" },
@@ -47,7 +47,6 @@ return {
       { "<leader>cc", "<cmd>CopilotChatToggle<CR>", desc = "Toggle Copilot Chat" },
     },
     opts = {
-      -- agent mặc định (chọn số trong :CopilotChatAgents),
       default_agent = "none",
       -- layout
       window = {
@@ -55,16 +54,13 @@ return {
         position = "right",
         width    = 0.4,
       },
-      -- tự động lấy context file, git-diff, con trỏ
       providers = { "file", "git_diff", "cursor" },
-      -- phím apply diff hunk
       mappings = {
         apply = "<leader>ca",
         next  = "<leader>cn",
         prev  = "<leader>cp",
       },
     },
-    -- thêm sẵn lệnh AIFix & AICompare
     config = function(_, opts)
       require("CopilotChat").setup(opts)
 

@@ -1,7 +1,5 @@
--- Kích hoạt Mason để cài LSP server
 require("mason").setup()
 
--- Mason-LSPconfig để tự động kết nối với lspconfig
 require("mason-lspconfig").setup({
   ensure_installed = {
     "pyright",   -- Python
@@ -14,11 +12,11 @@ require("mason-lspconfig").setup({
   automatic_installation = true,
 })
 
--- Nạp lspconfig và capabilities cho nvim-cmp
+-- lspconfig capabilities for nvim_cmp
 local lspconfig = require("lspconfig")
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
--- Hàm cấu hình chung khi server được attach
+-- general config 
 local on_attach = function(_, bufnr)
   local map = vim.keymap.set
   local opts = { buffer = bufnr, silent = true }
@@ -31,7 +29,7 @@ local on_attach = function(_, bufnr)
   map("n", "<leader>f", function() vim.lsp.buf.format { async = true } end, opts)
 end
 
--- Danh sách các LSP servers bạn muốn bật
+-- list LSP
 local servers = {
   "pyright",
   "clangd",
@@ -41,7 +39,7 @@ local servers = {
   "cssls",
 }
 
--- Lặp qua và setup từng server
+-- setup server
 for _, server in ipairs(servers) do
   --vim.lsp.config[server].setup({
   --  capabilities = capabilities,

@@ -32,7 +32,7 @@ end,
 {
   "nvim-tree/nvim-tree.lua",
   dependencies = {
-    "nvim-tree/nvim-web-devicons", -- vẫn giữ nếu sau này muốn bật lại icon
+    "nvim-tree/nvim-web-devicons", 
   },
   config = function()
     require("nvim-tree").setup({
@@ -43,7 +43,7 @@ end,
       },
       renderer = {
         icons = {
-          webdev_colors = false,  -- không dùng màu icon
+          webdev_colors = false, 
           show = {
             git = true,
             folder = true,
@@ -126,7 +126,6 @@ end,
       width = 30,
     },
     symbols = {
-      -- bạn có thể cấu hình thêm tùy thích ở đây
     },
   },
 },
@@ -266,8 +265,8 @@ end,
     require("overseer").run_task({
   cmd = { "docker-compose", "up" },
   name = "Docker Up",
-  strategy = "terminal", -- Hoặc "toggleterm" nếu bạn có cài đặt plugin đó
-  components = { "default" }, -- Quan trọng: Cần có components để hiển thị kết quả
+  strategy = "terminal", 
+  components = { "default" },
 })
 
   end,
@@ -275,7 +274,7 @@ end,
 {
   "nvim-telescope/telescope.nvim",
   dependencies = {
-    "lpoto/telescope-docker.nvim", -- tiện ích Docker cho telescope
+    "lpoto/telescope-docker.nvim", 
   },
   config = function()
     require("telescope").load_extension("docker")
@@ -296,7 +295,6 @@ end,
   lazy = false,
   event = "BufReadPre",
   config = function()
-    -- Không cần config phức tạp, plugin tự hoạt động khi mở file .csv
   end,
 },
 
@@ -325,10 +323,10 @@ end,
   "3rd/image.nvim",
   dependencies = { "nvim-lua/plenary.nvim" },
   lazy = true,
-  ft = { "markdown", "txt", "norg" }, -- load khi mở file markdown/text
+  ft = { "markdown", "txt", "norg" }, 
   config = function()
     require("image").setup({
-      backend = "viu", -- nhẹ, hỗ trợ mọi terminal
+      backend = "viu", 
       integrations = {
         markdown = true,
       },
@@ -361,32 +359,32 @@ end,
         show_buffer_icons = true,
         indicator = {
           style = "icon",
-          icon = "▶",  -- biểu tượng chỉ báo tab hiện tại
+          icon = "▶",  
         },
         modifier_icons = "●",
         },
      highlights = {
        buffer_selected = {
-    fg = "#fff0f7",        -- g0: sáng rõ
-    bg = "#d46a84",        -- gF: nền nổi bật
+    fg = "#fff0f7",      
+    bg = "#d46a84",        
     bold = true,
     italic = false,
   },
   buffer_visible = {
-    fg = "#9e8b95",        -- g3: nhạt hơn
-    bg = "#f0dde6",        -- g1: nền sáng vừa phải
+    fg = "#9e8b95",        
+    bg = "#f0dde6",        
     bold = false,
     italic = false,
   },
   background = {
-    fg = "#75616b",        -- g5: xám tối cho tab chưa chọn
-    bg = "#f0dde6",        -- g1: nền sáng
+    fg = "#75616b",        
+    bg = "#f0dde6",        
   },
 },
  
 
           })
-    -- Keybinds để chuyển tab
+    -- Keybind tab
     vim.keymap.set("n", "<C-o>", ":BufferLineCycleNext<CR>", {})
     vim.keymap.set("n", "<C-i>", ":BufferLineCyclePrev<CR>", {})
   end,
@@ -398,12 +396,12 @@ end,
 
 {
   "stevearc/conform.nvim",
-  lazy = false, -- load ngay để hỗ trợ format-on-save
+  lazy = false, 
   config = function()
     require("conform").setup({
       format_on_save = {
-        lsp_fallback = true, -- fallback nếu không có formatter riêng
-        timeout_ms = 500,    -- thời gian chờ format
+        lsp_fallback = true, 
+        timeout_ms = 500,    
       },
       formatters_by_ft = {
         lua = { "stylua" },
@@ -444,7 +442,6 @@ end,
           enabled = false,
         },
         server_opts_overrides = {
-          -- Optional: override agent model and settings
           capabilities = {
             textDocument = {
               codeAction = { dynamicRegistration = false },
@@ -484,7 +481,7 @@ end,
   window = {
     layout = "vertical",
     width = 0.4,
-    position = "right", -- đảm bảo có dòng này
+    position = "right",
   },
 })
       require("telescope").setup()
@@ -517,7 +514,7 @@ end,
   {
     "kdheepak/lazygit.nvim",
     dependencies = { "nvim-lua/plenary.nvim" },
-    cmd = { "LazyGit" },  -- lazy-load khi bạn gọi lệnh :LazyGit
+    cmd = { "LazyGit" }, 
     keys = {
       { "<C-h>g", "<cmd>LazyGit<CR>", desc = "Open LazyGit" },
     },
@@ -534,11 +531,10 @@ end,
 
 {
   "nvim-telescope/telescope.nvim",
-  tag = "0.1.4",  -- dùng version ổn định
   dependencies = {
     "nvim-lua/plenary.nvim",      
   {
-        "nvim-telescope/telescope-fzf-native.nvim", -- Extension tăng tốc
+        "nvim-telescope/telescope-fzf-native.nvim", 
         build = "make",
         config = function()
           require("telescope").load_extension("fzf")
@@ -547,7 +543,7 @@ end,
       
 
     },
-  cmd = "Telescope",  -- lazy load khi gọi :Telescope
+  cmd = "Telescope",  
   keys = {},
   config = function()
     require("telescope").setup({
@@ -591,7 +587,6 @@ end,
         },
       }
 
-      -- Định nghĩa command palette list
       local command_palette = {
         { "Save File", ":w<CR>" },
         { "Quit", ":q<CR>" },
@@ -605,7 +600,6 @@ end,
         { "Reload Config", ":source $MYVIMRC<CR>" },
       }
 
-      -- Tạo function mở command palette
       function _G.open_command_palette()
         pickers.new({}, {
           prompt_title = "Command Palette",
@@ -631,7 +625,7 @@ end,
         }):find()
       end
 
-      -- keymap mở command palette
+      -- keymap command Palette
       vim.api.nvim_set_keymap("n", "<C-c>p", ":lua open_command_palette()<CR>", { noremap = true, silent = true })
     end,
   },
@@ -645,11 +639,11 @@ end,
     version = "v2.*",
     build = "make install_jsregexp",
     dependencies = {
-      "saadparwaiz1/cmp_luasnip", -- tích hợp với nvim-cmp
-      "rafamadriz/friendly-snippets", -- bộ snippet mẫu
+      "saadparwaiz1/cmp_luasnip", 
+      "rafamadriz/friendly-snippets", 
     },
     config = function()
-      require("luasnip.loaders.from_vscode").lazy_load() -- tải các snippet từ friendly-snippets
+      require("luasnip.loaders.from_vscode").lazy_load() 
     end,
   },
 
@@ -676,7 +670,7 @@ end,
         html = {},
         css = {},
         cpp = { "cpplint" },
-        java = {}, -- Java thường dùng formatter/linter riêng
+        java = {}, 
       }
 
       -- special linter cho Python
@@ -1015,7 +1009,7 @@ end,
         return math.floor(vim.o.columns * 0.75)
       end,
       render = "default",
-      background_colour = "#000000", -- tránh warning khi theme transparent
+      background_colour = "#000000", 
     },
     config = function(_, opts)
       local notify = require("notify")
@@ -1034,7 +1028,6 @@ end,
     },
     opts = {
       lsp = {
-        -- override markdown rendering so hover looks nice
         override = {
           ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
           ["vim.lsp.util.stylize_markdown"] = true,
@@ -1045,16 +1038,14 @@ end,
       },
 
       presets = {
-        bottom_search = true,         -- / search ở dưới
-        command_palette = true,       -- cmdline + popup menu style
-        long_message_to_split = true, -- message dài -> split
+        bottom_search = true,         
+        command_palette = true,       
+        long_message_to_split = true, 
         inc_rename = false,
-        lsp_doc_border = true,        -- border cho hover/signature
+        lsp_doc_border = true,      
       },
 
-      -- Routes: lọc bớt message spam
       routes = {
-        -- “written” / “yanked” hay bị spam
         {
           filter = {
             event = "msg_show",
@@ -1070,7 +1061,6 @@ end,
           },
           opts = { skip = true },
         },
-        -- “No information available” (thường từ LSP)
         {
           filter = {
             event = "notify",

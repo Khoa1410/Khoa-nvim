@@ -10,11 +10,11 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- Cấu hình lazy.nvim, import plugin từ config.plugins
+--config lazy.nvim, import plugin 
 require("lazy").setup({
   { import = "config.plugins" },
 }, {
-  root = vim.fn.stdpath("config") .. "/setting_file",  -- plugin sẽ clone vào đây
+  root = vim.fn.stdpath("config") .. "/setting_file",  
 })
 
 
