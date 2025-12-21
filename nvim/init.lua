@@ -7,7 +7,7 @@ vim.opt.expandtab = true
 vim.opt.smartindent = true 
 vim.opt.clipboard = "unnamedplus" 
 vim.opt.cursorline = true
-
+vim.opt.laststatus = 3
 
 -- no copy when using delete
 vim.api.nvim_set_keymap('n', 'd', '"_d', { noremap = true, silent = true })  
