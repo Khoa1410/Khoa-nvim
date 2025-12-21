@@ -263,10 +263,11 @@ end,
   "stevearc/overseer.nvim",
   config = function()
     require("overseer").setup()
-    require("overseer").new_task({
+    require("overseer").run_task({
   cmd = { "docker-compose", "up" },
   name = "Docker Up",
-  strategy = "terminal",
+  strategy = "terminal", -- Hoặc "toggleterm" nếu bạn có cài đặt plugin đó
+  components = { "default" }, -- Quan trọng: Cần có components để hiển thị kết quả
 })
 
   end,
@@ -454,84 +455,11 @@ end,
     end,
   },
 
-  -- Copilot Chat with Agent capabilities
 
 
 
 
 
-
-{
-    "CopilotC-Nvim/CopilotChat.nvim",
-    build        = "make tiktoken",
-    dependencies = {
-      "github/copilot.vim",                   -- auth
-      { "nvim-lua/plenary.nvim", branch = "master" },
-    },
-
-    config = function()
-      local chat = require("CopilotChat")
-      chat.setup({                            -- MẶC ĐỊNH: không ép model, không keymap
-      })
-
-      --------------------------------------------------------------------------
-      -- ❶ DANH SÁCH BUFFER ĐƯỢC THÊM
-      --------------------------------------------------------------------------
-      vim.g.copilot_chat_files = {}
-
-      local function add_buf(bufnr)
-        if not vim.tbl_contains(vim.g.copilot_chat_files, bufnr) then
-          table.insert(vim.g.copilot_chat_files, bufnr)
-          vim.notify("Added: " .. vim.api.nvim_buf_get_name(bufnr), vim.log.levels.INFO)
-        else
-          vim.notify("Buffer already in list", vim.log.levels.WARN)
-        end
-      end
-
-      --------------------------------------------------------------------------
-      -- ❷ CÁC LỆNH QUẢN LÝ FILE & CHAT
-      --------------------------------------------------------------------------
-      -- Thêm file đang mở
-      vim.api.nvim_create_user_command("CopilotAddFile", function()
-        add_buf(vim.api.nvim_get_current_buf())
-      end, { desc = "Add current buffer" })
-
-      -- Xóa list
-      vim.api.nvim_create_user_command("CopilotClearFiles", function()
-        vim.g.copilot_chat_files = {}
-        vim.notify("File list cleared", vim.log.levels.INFO)
-      end, { desc = "Clear added file list" })
-
-      -- Liệt kê file
-      vim.api.nvim_create_user_command("CopilotListFiles", function()
-        if #vim.g.copilot_chat_files == 0 then
-          print("List empty")
-          return
-        end
-        for i, b in ipairs(vim.g.copilot_chat_files) do
-          print(i .. ": " .. vim.api.nvim_buf_get_name(b))
-        end
-      end, { desc = "Show list" })
-
-      -- Mở chat kèm các file đã add
-      vim.api.nvim_create_user_command("CopilotChatFiles", function(opts)
-        if #vim.g.copilot_chat_files == 0 then
-          vim.notify("List empty – add files first (:CopilotAddFile)", vim.log.levels.WARN)
-          return
-        end
-        local prompt = opts.args ~= "" and opts.args
-          or "Review the added files and send a unified diff patch that fixes issues."
-        -- Nếu muốn ép Sonnet 4: prompt = "$claude-sonnet-4\\n" .. prompt
-        chat.open(prompt, { context = { buffers = vim.g.copilot_chat_files } })
-      end, { nargs = "*", desc = "Chat with added files" })
-
-      --------------------------------------------------------------------------
-      -- ❸ LỆNH ÁP DỤNG / BỎ QUA HUNK (plugin đã có)
-      --------------------------------------------------------------------------
-      vim.api.nvim_create_user_command("CopilotAccept",  "CopilotChatApply", { desc = "Apply hunk"  })
-      vim.api.nvim_create_user_command("CopilotReject",  "CopilotChatSkip",  { desc = "Skip hunk"  })
-    end,
-  },
 
 
 
@@ -979,35 +907,35 @@ end,
 
 
 
---dressing nvim
-
- {
-    "stevearc/dressing.nvim",
-    event = "VeryLazy",
-    opts = {
-      input = {
-        enabled = true,
-        default_prompt = "➤ ",
-        border = "rounded",
-        insert_only = true,
-        start_in_insert = true,
-        win_options = {
-          winblend = 0,
-          wrap = false,
-        },
-      },
-      select = {
-        enabled = true,
-        backend = { "telescope", "builtin" }, -- ưu tiên Telescope, fallback builtin
-        builtin = {
-          border = "rounded",
-          win_options = {
-            winblend = 0,
-          },
-        },
-      },
-    },
-  },
+----dressing nvim
+--
+-- {
+--    "stevearc/dressing.nvim",
+--    event = "VeryLazy",
+--    opts = {
+--      input = {
+--        enabled = true,
+--        default_prompt = "➤ ",
+--        border = "rounded",
+--        insert_only = true,
+--        start_in_insert = true,
+--        win_options = {
+--          winblend = 0,
+--          wrap = false,
+--        },
+--      },
+--      select = {
+--        enabled = true,
+--        backend = { "telescope", "builtin" }, -- ưu tiên Telescope, fallback builtin
+--        builtin = {
+--          border = "rounded",
+--          win_options = {
+--            winblend = 0,
+--          },
+--        },
+--      },
+--    },
+--  },
 
 
 
