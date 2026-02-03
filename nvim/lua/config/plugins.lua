@@ -154,15 +154,15 @@ return {
 		config = function()
 			require("nvim-treesitter").setup({
 				ensure_installed = {
---					"lua",
---					"python",
---					"javascript",
---					"typescript",
---					"html",
---					"css",
---					"bash",
---					"json",
---					"yaml",
+					--					"lua",
+					--					"python",
+					--					"javascript",
+					--					"typescript",
+					--					"html",
+					--					"css",
+					--					"bash",
+					--					"json",
+					--					"yaml",
 				},
 				highlight = {
 					enable = true,
@@ -296,7 +296,7 @@ return {
 		dependencies = { "williamboman/mason.nvim" },
 		config = function()
 			require("mason-tool-installer").setup({
---				ensure_installed = { "stylua", "prettier", "black", "flake8", "codelldb" },
+				--				ensure_installed = { "stylua", "prettier", "black", "flake8", "codelldb" },
 			})
 		end,
 	},
@@ -307,7 +307,7 @@ return {
 		config = function()
 			require("mason").setup()
 			require("mason-tool-installer").setup({
-				ensure_installed = { "prettier", "stylua", "black" },
+				--ensure_installed = { "prettier", "stylua", "black" },
 			})
 			require("conform").setup({
 				format_on_save = {
@@ -331,34 +331,35 @@ return {
 	},
 
 	-- Core Copilot completion
-	{
-		"zbirenbaum/copilot.lua",
-		event = "InsertEnter",
-		config = function()
-			require("copilot").setup({
-				suggestion = {
-					enabled = true,
-					auto_trigger = true,
-					keymap = {
-						accept = "<C-r>",
-						next = "<C-c>h",
-						prev = "<C-c>l",
-						dismiss = "<C-c>d",
-					},
-				},
-				panel = {
-					enabled = false,
-				},
-				server_opts_overrides = {
-					capabilities = {
-						textDocument = {
-							codeAction = { dynamicRegistration = false },
-						},
-					},
-				},
-			})
-		end,
-	},
+	--{
+	--	"zbirenbaum/copilot.lua",
+	--	event = "InsertEnter",
+	--	config = function()
+	--		require("copilot").setup({
+	--			suggestion = {
+	--				enabled = true,
+	--				auto_trigger = true,
+	--				keymap = {
+	--					accept = "<C-r>",
+	--					next = "<C-c>h",
+	--					prev = "<C-c>l",
+	--					dismiss = "<C-c>d",
+	--				},
+	--			},
+	--			panel = {
+	--				enabled = false,
+	--			},
+	--			server_opts_overrides = {
+	--				capabilities = {
+	--					textDocument = {
+	--						codeAction = { dynamicRegistration = false },
+	--					},
+	--				},
+	--			},
+	--		})
+	--	end,
+	--},
+
 	-- diffview
 
 	{
@@ -581,23 +582,23 @@ return {
 		config = function()
 			require("mason").setup()
 			require("mason-lspconfig").setup({
-				ensure_installed = {
-					"lua_ls",
-					"pyright",
-					"ruff_lsp",
-					"clangd",
-					"eslint",
-					"tailwindcss",
-					"emmet_language_server",
-					"jsonls",
-					--"jdtls",
-					"typescript",
-					"ts_ls",
-					"typescript-language-server",
-					"html",
-					"cssls",
-					"codelldb",
-				},
+				--	ensure_installed = {
+				--		"lua_ls",
+				--		"pyright",
+				--		"ruff_lsp",
+				--		"clangd",
+				--		"eslint",
+				--		"tailwindcss",
+				--		"emmet_language_server",
+				--		"jsonls",
+				--		--"jdtls",
+				--		"typescript",
+				--		"ts_ls",
+				--		"typescript-language-server",
+				--		"html",
+				--		"cssls",
+				--		"codelldb",
+				--	},
 				automatic_installation = true,
 			})
 
